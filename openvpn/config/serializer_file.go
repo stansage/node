@@ -1,4 +1,4 @@
-package openvpn
+package config
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ type optionStringSerializable interface {
 	toFile() (string, error)
 }
 
-func ConfigToString(config Config) (string, error) {
+func (config Config) ToString() (string, error) {
 	var output bytes.Buffer
 
 	for _, item := range config.options {

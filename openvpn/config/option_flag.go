@@ -1,4 +1,4 @@
-package openvpn
+package config
 
 func OptionFlag(name string) optionFlag {
 	return optionFlag{name}

@@ -1,4 +1,4 @@
-package openvpn
+package config
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -12,7 +12,7 @@ func TestConfigToString(t *testing.T) {
 		OptionParam("very-value", "1234"),
 	)
 
-	output, err := ConfigToString(config)
+	output, err := config.ToString()
 	assert.Nil(t, err)
 	assert.Equal(t, "enable-something\nvery-value 1234\n", output)
 }

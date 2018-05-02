@@ -1,22 +1,28 @@
 package openvpn
 
+import "github.com/mysterium/node/openvpn/config"
+
+// ServerConfig represents openvpn as server configuration
 type ServerConfig struct {
-	*Config
+	*config.Config
 }
 
+// SetServerMode sets required configuration parameters to act as server
 func (c *ServerConfig) SetServerMode(port int, network, netmask string) {
 	c.SetPort(port)
-	c.setParam("server", network+" "+netmask)
-	c.setParam("topology", "subnet")
+	c.SetParam("server", network+" "+netmask)
+	c.SetParam("topology", "subnet")
 }
 
+// SetTLSServer sets required configuration params for tls-server
 func (c *ServerConfig) SetTLSServer() {
-	c.setFlag("tls-server")
-	c.AddOptions(OptionFile("dh", "none"))
+	c.SetFlag("tls-server")
+	c.AddOptions(config.OptionFile("dh", "none"))
 }
 
+// SetProtocol sets specified protocol options
 func (c *ServerConfig) SetProtocol(protocol string) {
 	if protocol == "tcp" {
-		c.setParam("proto", "tcp-server")
+		c.SetParam("proto", "tcp-server")
 	}
 }

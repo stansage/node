@@ -62,7 +62,7 @@ func (server *Server) Start() error {
 	}
 
 	// Fetch the current params
-	arguments, err := ConfigToArguments(*config.Config)
+	arguments, err := (*config.Config).ToArguments()
 	if err != nil {
 		return err
 	}

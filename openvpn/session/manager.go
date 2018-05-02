@@ -29,7 +29,7 @@ func (manager *manager) Create(peerID identity.Identity) (sessionInstance sessio
 	defer manager.creationLock.Unlock()
 	sessionInstance.ID = manager.idGenerator.Generate()
 	sessionInstance.ConsumerID = peerID
-	sessionInstance.Config, err = openvpn.ConfigToString(*manager.generateClientConfig().Config)
+	sessionInstance.Config, err = (*manager.generateClientConfig()).ToString()
 	if err != nil {
 		return
 	}

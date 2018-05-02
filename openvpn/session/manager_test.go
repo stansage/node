@@ -3,6 +3,7 @@ package session
 import (
 	"github.com/mysterium/node/identity"
 	"github.com/mysterium/node/openvpn"
+	"github.com/mysterium/node/openvpn/config"
 	"github.com/mysterium/node/session"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -10,7 +11,7 @@ import (
 
 func NewFakeClientConfigGenerator(port int) openvpn.ClientConfigGenerator {
 	return func() *openvpn.ClientConfig {
-		vpnClientConfig := &openvpn.ClientConfig{&openvpn.Config{}}
+		vpnClientConfig := &openvpn.ClientConfig{&config.Config{}}
 		vpnClientConfig.SetPort(port)
 		return vpnClientConfig
 	}

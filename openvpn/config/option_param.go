@@ -1,4 +1,4 @@
-package openvpn
+package config
 
 func OptionParam(name, value string) optionParam {
 	return optionParam{name, value}

@@ -1,11 +1,15 @@
-package openvpn
+package config
 
 import (
 	"fmt"
 	"strings"
 )
 
-func ConfigToArguments(config Config) ([]string, error) {
+type optionCliSerializable interface {
+	toCli() (string, error)
+}
+
+func (config Config) ToArguments() ([]string, error) {
 	arguments := make([]string, 0)
 
 	for _, item := range config.options {
@@ -24,8 +28,4 @@ func ConfigToArguments(config Config) ([]string, error) {
 	}
 
 	return arguments, nil
-}
-
-type optionCliSerializable interface {
-	toCli() (string, error)
 }

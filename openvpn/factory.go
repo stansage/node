@@ -1,71 +1,75 @@
 package openvpn
 
 import (
+	"github.com/mysterium/node/openvpn/config"
 	"github.com/mysterium/node/openvpn/primitives"
 	"io/ioutil"
 )
 
+// NewServerConfig creates openvpn configuration options preset for openvpn as server
 func NewServerConfig(
 	network, netmask string,
 	secPrimitives *primitives.SecurityPrimitives,
 	protocol string,
 ) *ServerConfig {
-	config := ServerConfig{NewConfig()}
-	config.SetServerMode(1194, network, netmask)
-	config.SetTLSServer()
-	config.SetProtocol(protocol)
-	config.SetTLSCACertificate(secPrimitives.CACertPath)
-	config.SetTLSPrivatePubKeys(secPrimitives.ServerCertPath, secPrimitives.ServerKeyPath)
-	config.SetTLSCrypt(secPrimitives.TLSCryptKeyPath)
+	serverConfig := ServerConfig{config.NewConfig()}
+	serverConfig.SetServerMode(1194, network, netmask)
+	serverConfig.SetTLSServer()
+	serverConfig.SetProtocol(protocol)
+	serverConfig.SetTLSCACertificate(secPrimitives.CACertPath)
+	serverConfig.SetTLSPrivatePubKeys(secPrimitives.ServerCertPath, secPrimitives.ServerKeyPath)
+	serverConfig.SetTLSCrypt(secPrimitives.TLSCryptKeyPath)
 
-	config.SetDevice("tun")
-	config.setParam("cipher", "AES-256-GCM")
-	config.setParam("verb", "3")
-	config.setParam("tls-version-min", "1.2")
-	config.setFlag("management-client-auth")
-	config.setParam("verify-client-cert", "none")
-	config.setParam("tls-cipher", "TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384")
-	config.setParam("reneg-sec", "60")
-	config.SetKeepAlive(10, 60)
-	config.SetPingTimerRemote()
-	config.SetPersistTun()
-	config.SetPersistKey()
-	config.setFlag("explicit-exit-notify")
+	serverConfig.SetDevice("tun")
+	serverConfig.SetParam("cipher", "AES-256-GCM")
+	serverConfig.SetParam("verb", "3")
+	serverConfig.SetParam("tls-version-min", "1.2")
+	serverConfig.SetFlag("management-client-auth")
+	serverConfig.SetParam("verify-client-cert", "none")
+	serverConfig.SetParam("tls-cipher", "TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384")
+	serverConfig.SetParam("reneg-sec", "60")
+	serverConfig.SetKeepAlive(10, 60)
+	serverConfig.SetPingTimerRemote()
+	serverConfig.SetPersistTun()
+	serverConfig.SetPersistKey()
+	serverConfig.SetFlag("explicit-exit-notify")
 
-	return &config
+	return &serverConfig
 }
 
+// NewClientConfig creates openvpn configuration options preset for openvpn as client
 func NewClientConfig(
 	remote string,
 	caCertPath, tlsCryptKeyPath string,
 	protocol string,
 ) *ClientConfig {
-	config := ClientConfig{NewConfig()}
-	config.SetClientMode(remote, 1194)
-	config.SetProtocol(protocol)
-	config.SetTLSCACertificate(caCertPath)
-	config.SetTLSCrypt(tlsCryptKeyPath)
-	config.RestrictReconnects()
+	clientConfig := ClientConfig{config.NewConfig()}
+	clientConfig.SetClientMode(remote, 1194)
+	clientConfig.SetProtocol(protocol)
+	clientConfig.SetTLSCACertificate(caCertPath)
+	clientConfig.SetTLSCrypt(tlsCryptKeyPath)
+	clientConfig.RestrictReconnects()
 
-	config.SetDevice("tun")
-	config.setParam("cipher", "AES-256-GCM")
-	config.setParam("verb", "3")
-	config.setParam("tls-cipher", "TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384")
-	config.SetKeepAlive(10, 60)
-	config.SetPingTimerRemote()
-	config.SetPersistTun()
-	config.SetPersistKey()
+	clientConfig.SetDevice("tun")
+	clientConfig.SetParam("cipher", "AES-256-GCM")
+	clientConfig.SetParam("verb", "3")
+	clientConfig.SetParam("tls-cipher", "TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384")
+	clientConfig.SetKeepAlive(10, 60)
+	clientConfig.SetPingTimerRemote()
+	clientConfig.SetPersistTun()
+	clientConfig.SetPersistKey()
 
-	config.setParam("reneg-sec", "60")
-	config.setParam("resolv-retry", "infinite")
-	config.setParam("redirect-gateway", "def1 bypass-dhcp")
-	config.setParam("dhcp-option", "DNS 208.67.222.222")
-	config.setParam("dhcp-option", "DNS 208.67.220.220")
-	config.setFlag("explicit-exit-notify")
+	clientConfig.SetParam("reneg-sec", "60")
+	clientConfig.SetParam("resolv-retry", "infinite")
+	clientConfig.SetParam("redirect-gateway", "def1 bypass-dhcp")
+	clientConfig.SetParam("dhcp-option", "DNS 208.67.222.222")
+	clientConfig.SetParam("dhcp-option", "DNS 208.67.220.220")
+	clientConfig.SetFlag("explicit-exit-notify")
 
-	return &config
+	return &clientConfig
 }
 
+// NewClientConfigFromString parses given string and creates configuration options for openvpn as client
 func NewClientConfigFromString(
 	configString, configFile string,
 	scriptUp, scriptDown string,
@@ -75,11 +79,11 @@ func NewClientConfigFromString(
 		return nil, err
 	}
 
-	config := ClientConfig{NewConfig()}
-	config.AddOptions(OptionParam("config", configFile))
+	clientConfig := ClientConfig{config.NewConfig()}
+	clientConfig.AddOptions(config.OptionParam("clientConfig", configFile))
 
-	config.setParam("up", scriptUp)
-	config.setParam("down", scriptDown)
+	clientConfig.SetParam("up", scriptUp)
+	clientConfig.SetParam("down", scriptDown)
 
-	return &config, nil
+	return &clientConfig, nil
 }
