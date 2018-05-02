@@ -16,7 +16,7 @@ func NewServer(openvpnBinary string, generateConfig ServerConfigGenerator, direc
 	return &Server{
 		generateConfig: generateConfig,
 		management:     management.NewManagement(socketAddress, "[server-management] ", middlewares...),
-		process:        NewProcess(openvpnBinary, "[server-openvpn] "),
+		process:        NewProcess(openvpnBinary, "[server-openvpn]"),
 	}
 }
 

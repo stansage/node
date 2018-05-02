@@ -24,7 +24,7 @@ func NewClient(openvpnBinary string, config *ClientConfig, directoryRuntime stri
 	return &openVpnClient{
 		config:     config,
 		management: management.NewManagement(socketAddress, "[client-management] ", middlewares...),
-		process:    NewProcess(openvpnBinary, "[client-openvpn] "),
+		process:    NewProcess(openvpnBinary, "[client-openvpn]"),
 	}
 }
 

@@ -10,10 +10,10 @@ import (
 )
 
 // NewProcess returns process wrapper for given executable
-func NewProcess(openvpnBinary, logPrefix string) *Process {
+func NewProcess(executablePath, logPrefix string) *Process {
 	return &Process{
 		logPrefix:          logPrefix,
-		openvpnBinary:      openvpnBinary,
+		executablePath:     executablePath,
 		cmdExitError:       make(chan error, 1), //channel should have capacity to hold single process exit error
 		cmdShutdownStarted: make(chan bool),
 		cmdShutdownWaiter:  sync.WaitGroup{},
@@ -23,7 +23,7 @@ func NewProcess(openvpnBinary, logPrefix string) *Process {
 // Process struct defines process wrapper which handles clean shutdown, tracks executable exit errors, etc.
 type Process struct {
 	logPrefix          string
-	openvpnBinary      string
+	executablePath     string
 	cmdExitError       chan error
 	cmdShutdownStarted chan bool
 	cmdShutdownWaiter  sync.WaitGroup
@@ -33,8 +33,8 @@ type Process struct {
 // Start underlying binary defined by process wrapper with given arguments
 func (process *Process) Start(arguments []string) (err error) {
 	// Create the command
-	log.Info(process.logPrefix, "Starting process with arguments: ", arguments)
-	cmd := exec.Command(process.openvpnBinary, arguments...)
+	log.Infof("%s Starting process [%s] with arguments: %s", process.logPrefix, process.executablePath, arguments)
+	cmd := exec.Command(process.executablePath, arguments...)
 
 	// Attach monitors for stdout, stderr and exit
 	process.stdoutMonitor(cmd)
